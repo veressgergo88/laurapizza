@@ -67,17 +67,23 @@ const updateOrderWithItem = () => {
   }
 }
 
-const deleteOrderWithItem = () => {
-  order = order ? {
+const resetOrder = () => {
+  order = {
     name: "",
     zipCode: "",
     items: []
-  } : {
-    name: "",
-    zipCode: "",
+}
+}
+
+const deleteItem = (id: number) => {
+  if (order) {order = {
+    name: order.name,
+    zipCode: order.zipCode,
     items: [
+      ...order.items.filter(item => item.id !== id),
     ]
   }
+}
 }
 
 // render
@@ -114,16 +120,23 @@ const renderOrder = (order: Order) => {
       <h1>Your order</h1>
       ${order.items.map(item => `
         <p class="bg-red-500">${item.amount} x ${pizzas.find(pizza => pizza.id === item.id)!.name}</p>
-      `)}
-      <input placeholder="Name">
-      <input placeholder="Zip code">
-      <button>Send order</button>
-      <button id="delete">Delete order</button>
+        <button id="delete-${item.id}">X</button>
+        `)}
+        <input placeholder="Name">
+        <input placeholder="Zip code">
+        <button>Send order</button>
+        <button id="reset">Reset order</button>
     </div>
   `
 
   document.getElementById("order")!.innerHTML = content
-  document.getElementById("delete")!.addEventListener("click", deleteListener)
+  document.getElementById("reset")!.addEventListener("click", resetListener)
+  let i = 0
+  while(order.items[i] !== undefined){
+    let item = order.items[i]
+    document.getElementById(`delete-${item.id}`)!.addEventListener("click", deleteListener)
+    i++
+  }
 }
 
 // eventListeners
@@ -149,8 +162,16 @@ const addListener = () => {
     renderOrder(order)
 }
 
-const deleteListener = () => {
-  deleteOrderWithItem()
+const deleteListener = (event: Event) => {
+  deleteItem(+(event.target as HTMLButtonElement).id.split("-")[1])
+  if (order)
+    renderOrder(order)
+}
+
+const resetListener = () => {
+  resetOrder()
+  if (order)
+    renderOrder(order)
 }
 
 init()
