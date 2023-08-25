@@ -67,6 +67,18 @@ const updateOrderWithItem = () => {
   }
 }
 
+const deleteOrderWithItem = () => {
+  order = order ? {
+    name: "",
+    zipCode: "",
+    items: []
+  } : {
+    name: "",
+    zipCode: "",
+    items: [
+    ]
+  }
+}
 
 // render
 const renderList = (pizzas: Pizza[]) => {
@@ -106,10 +118,12 @@ const renderOrder = (order: Order) => {
       <input placeholder="Name">
       <input placeholder="Zip code">
       <button>Send order</button>
+      <button id="delete">Delete order</button>
     </div>
   `
 
   document.getElementById("order")!.innerHTML = content
+  document.getElementById("delete")!.addEventListener("click", deleteListener)
 }
 
 // eventListeners
@@ -135,5 +149,17 @@ const addListener = () => {
     renderOrder(order)
 }
 
+const deleteListener = () => {
+  deleteOrderWithItem()
+}
 
 init()
+
+/* Feladatok
+delete item
+update name/zipCode 
+send order
+
+bonusz:
+loading/sending kezelese
+*/
